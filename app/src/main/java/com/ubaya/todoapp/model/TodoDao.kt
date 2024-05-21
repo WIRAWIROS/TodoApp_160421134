@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface TodoDao {
@@ -19,5 +20,12 @@ interface TodoDao {
 
     @Delete
     fun deleteTodo(todo:Todo)
+
+    @Query("UPDATE todo SET title=:title, notes=:notes, priority=:priority WHERE uuid = :id")
+    fun update(title:String, notes:String, priority:Int, id:Int)
+
+    //cara pendek update
+    @Update
+    fun updateTodo(todo:Todo)
 }
 
