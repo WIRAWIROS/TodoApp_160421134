@@ -12,21 +12,33 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.ubaya.todoapp.R
 import com.ubaya.todoapp.databinding.FragmentCreateTodoBinding
+import com.ubaya.todoapp.databinding.FragmentEditTodoBinding
 import com.ubaya.todoapp.model.Todo
 import com.ubaya.todoapp.viewmodel.DetailTodoViewModel
 
-class EditTodoFragment : Fragment() {
-    private lateinit var binding: FragmentCreateTodoBinding
+class EditTodoFragment : Fragment(), RadioClickListener, TodoEditClickListener  {
+    private lateinit var binding: FragmentEditTodoBinding
     private lateinit var viewModel: DetailTodoViewModel
     private lateinit var todo: Todo
     override fun onCreateView(inflater: LayoutInflater, container:
     ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentCreateTodoBinding.inflate(inflater,container,
+        binding = FragmentEditTodoBinding.inflate(inflater,container,
             false)
         return binding.root
     }
+
+    override fun onRadioClick(v: View, priority: Int, obj: Todo) {
+        obj.priority = priority
+    }
+    override fun onTodoEditClick(v: View) {
+        viewModel.update(binding.todo)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.radioListener = this
+        binding.saveListener = this
+
         viewModel = ViewModelProvider(this).get(DetailTodoViewModel::class.java)
 
         binding.txtJudulToDo.text = "Edit Todo"
@@ -45,6 +57,7 @@ class EditTodoFragment : Fragment() {
         //}
 
         //cara dosen
+        /*
         binding.btnAdd.setOnClickListener {
             todo.title = binding.txtTitle.text.toString()
             todo.notes = binding.txtNotes.text.toString()
@@ -57,11 +70,15 @@ class EditTodoFragment : Fragment() {
             Navigation.findNavController(it).popBackStack()
         }
         //
+        */
         observeViewModel()
     }
 
     fun observeViewModel() {
         viewModel.todoLD.observe(viewLifecycleOwner, Observer {
+            binding.todo = it
+
+            /*
             //cara dosen
             todo = it
             //
@@ -72,10 +89,12 @@ class EditTodoFragment : Fragment() {
                 1 -> binding.radioLow.isChecked = true
                 2 -> binding.radioMedium.isChecked = true
                 else -> binding.radioHigh.isChecked = true
-            }
+            }*/
 
         })
     }
+
+
 
 
 }
