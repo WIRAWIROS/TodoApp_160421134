@@ -8,15 +8,14 @@ import com.ubaya.todoapp.model.TodoDatabase
 
 val DB_NAME = "newtododb"
 
-fun buildDb(context: Context):TodoDatabase {
+fun buildDb(context: Context): TodoDatabase {
     val db = Room.databaseBuilder(context,
         TodoDatabase::class.java, DB_NAME)
-        .addMigrations(MIGRATION_1_2)
+        .addMigrations(MIGRATION_1_2, MIGRATION_2_3) // Added new migration
         .build()
 
     return db
 }
-
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -25,4 +24,10 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
-
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE todo ADD COLUMN is_done INTEGER DEFAULT 0 NOT NULL" // karena SQLite tidak memiliki tipe boolean, jadi menggunakan int yang lebih compatible
+        )
+    }
+}
